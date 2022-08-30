@@ -17,8 +17,24 @@ defmodule TodoApp.Todos.Task do
   @doc false
   def changeset(task, attrs) do
     task
-    |> cast(attrs, [:description, :done])
+    |> cast(attrs, [:description, :done, :expiration, :user_id])
     |> validate_required([:description, :done])
     |> validate_length(:description, min: 5)
+    |> foreign_key_constraint(:user)
+  end
+
+  def query_for_tasks(done) do
+    from t in TodoApp.Todos.Task, where: t.done == ^done
+  end
+
+  def another_query_for_tasks(done) do
+    __MODULE__
+    |> where(done: ^done)
+  end
+
+  def recent do
+    from t in __MODULE__,
+      order_by: [asc: t.inserted_at],
+      limit: 5
   end
 end
