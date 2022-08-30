@@ -1,8 +1,10 @@
 defmodule TodoApp.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
+  alias TodoApp.Todos.Task
 
   schema "users" do
+    has_many :tasks, Task
     field :email, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
