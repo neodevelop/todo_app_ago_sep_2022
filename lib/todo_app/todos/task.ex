@@ -1,11 +1,15 @@
 defmodule TodoApp.Todos.Task do
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query, only: [from: 2, where: 2]
+  alias TodoApp.Accounts.User
 
   @derive {Jason.Encoder, only: [:description, :id]}
   schema "tasks" do
+    belongs_to :user, User
     field :description, :string
     field :done, :boolean, default: false
+    field :expiration, :naive_datetime
 
     timestamps()
   end
