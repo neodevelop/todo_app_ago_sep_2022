@@ -3,13 +3,13 @@ defmodule TodoApp.Repo.Migrations.CreateLists do
 
   def change do
     create table(:lists) do
-      add :name, :string
-      add :tags, {:array, :string}
-      add :user_id, references(:users, on_delete: :nothing)
+      add(:name, :string)
+      add(:tags, {:array, :string})
+      add(:user_id, references(:users, on_delete: :nothing))
 
       timestamps()
     end
 
-    create index(:lists, [:user_id])
+    create(index(:lists, [:user_id]))
   end
 end
