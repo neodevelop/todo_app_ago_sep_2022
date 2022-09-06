@@ -4,6 +4,7 @@ defmodule TodoApp.Todos.List do
 
   alias TodoApp.Accounts.User
   alias TodoApp.Todos.TaskList
+  alias TodoApp.Todos.Task
 
   schema "lists" do
     field :name, :string
@@ -12,7 +13,7 @@ defmodule TodoApp.Todos.List do
 
     has_many :collaborators, User
 
-    many_to_many :tasks, TodoApp.Todos.Task, join_through: TaskList
+    many_to_many :tasks, Task, join_through: TaskList
 
     timestamps()
   end
@@ -20,8 +21,9 @@ defmodule TodoApp.Todos.List do
   @doc false
   def changeset(list, attrs) do
     list
-    |> cast(attrs, [:name, :tags])
-    |> validate_required([:name, :tags])
-    |> cast_assoc(:tasks)
+    |> cast(attrs, [:name, :tags, :user_id])
+    |> validate_required([:name, :tags, :user_id])
+    |> foreign_key_constraint(:user_id)
+    |> cast_assoc(:tasks, with: &TaskList.changeset/2)
   end
 end
