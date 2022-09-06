@@ -22,5 +22,6 @@ defmodule TodoApp.Todos.List do
     list
     |> cast(attrs, [:name, :tags])
     |> validate_required([:name, :tags])
+    |> cast_assoc(:tasks)
   end
 end
