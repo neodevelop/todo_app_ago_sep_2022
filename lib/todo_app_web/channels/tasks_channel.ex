@@ -3,6 +3,8 @@ defmodule TodoAppWeb.TasksChannel do
 
   @impl true
   def join("tasks:" <> _id, payload, socket) do
+    IO.inspect(payload, label: "PAYLOAD: ")
+
     if authorized?(payload) do
       {:ok, socket}
     else
@@ -26,8 +28,10 @@ defmodule TodoAppWeb.TasksChannel do
   end
 
   @impl true
-  def handle_in(_, _payload, socket) do
+  def handle_in(_, payload, socket) do
+    #  IO.inspect(binding(), label: "HANDLE_IN")
     # broadcast(socket, "shout", payload)
+    broadcast(socket, "new_msg", payload)
     {:noreply, socket}
   end
 
