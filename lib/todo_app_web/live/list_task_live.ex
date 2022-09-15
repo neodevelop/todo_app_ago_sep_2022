@@ -7,20 +7,28 @@ defmodule TodoAppWeb.ListTaskLive do
 
   def mount(_params, _session, socket) do
     changeset = Todos.change_list(%List{})
-    socket = socket |> assign(changeset: changeset, tasks: [])
+    changeset_task = Todos.change_task(%Task{})
+    socket = socket |> assign(changeset: changeset, changeset_task: changeset_task, tasks: [])
     {:ok, socket}
   end
 
-  def handle_event("add_task", _parans, socket) do
-    socket =
-      socket
-      |> assign(:tasks, [%Task{} | socket.assigns.tasks])
+  def handle_event("validate_task", %{"task" => task_params}, socket) do
+    changeset_task =
+      %Task{}
+      |> Todos.change_task(Map.put(task_params, "user_id", 1))
+      |> Map.put(:action, :insert)
 
-    {:noreply, socket}
+    {:noreply, assign(socket, :changeset_task, changeset_task)}
   end
 
-  def handle_event("validate_task" <> index, _params, socket) do
-    IO.inspect(binding())
+  def handle_event("add_task", %{"task" => task_params}, socket) do
+    socket =
+      socket
+      |> assign(
+        tasks: [Map.put(task_params, "user_id", 1) | socket.assigns.tasks],
+        changeset_task: Todos.change_task(%Task{})
+      )
+
     {:noreply, socket}
   end
 
@@ -35,20 +43,20 @@ defmodule TodoAppWeb.ListTaskLive do
 
   def handle_event("save", %{"list" => list_params}, socket) do
     list_params
+    |> Map.put("user_id", 1)
     |> Map.put("tasks", socket.assigns.tasks)
     |> Todos.create_list()
     |> case do
       {:ok, list} ->
-        socket
-        |> put_flash(:info, "A list has been created")
-        |> redirect(to: Routes.list_path(socket, :show, list))
+        socket =
+          socket
+          |> put_flash(:info, "A list has been created")
+          |> redirect(to: Routes.list_path(socket, :show, list))
 
         {:noreply, socket}
 
       {:error, changeset} ->
         {:error, assign(socket, :changeset, changeset)}
     end
-
-    {:noreply, socket}
   end
 end
