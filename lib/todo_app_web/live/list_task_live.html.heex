@@ -17,11 +17,24 @@
 
 </.form>
 
-<button phx-click="add_task" type="button">Add task </button>
-<%= for {task, index} <- Enum.with_index(@tasks) do %>
+<.form let={f} for={@changeset_task} phx-change="validate_task" phx-submit="add_task">
+  <%= label f, :description %>
+  <%= text_input f, :description %>
+  <%= error_tag f, :description %>
+
+  <%= label f, :done %>
+  <%= checkbox f, :done %>
+  <%= error_tag f, :done %>
+
   <div>
-    <.form let={f} for={@changeset} phx-change={"validate_task_#{index}"}>
-    <input type="text" name={"task_#{index}"}>
-    </.form>
+    <%= submit "Add task" %>
   </div>
-<% end %>
+</.form>
+
+<div>
+  <ul>
+    <%= for task <- @tasks do %>
+      <li><%= inspect task %></li>
+    <% end %>
+  </ul>
+</div>
