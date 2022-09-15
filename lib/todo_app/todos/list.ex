@@ -27,4 +27,11 @@ defmodule TodoApp.Todos.List do
     |> foreign_key_constraint(:user_id)
     |> cast_assoc(:tasks)
   end
+
+  @doc false
+  def changeset_with_tasks(list, attrs) do
+    list
+    |> changeset(attrs)
+    |> validate_length(:tasks, min: 1)
+  end
 end
