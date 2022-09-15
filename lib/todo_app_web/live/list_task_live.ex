@@ -45,7 +45,7 @@ defmodule TodoAppWeb.ListTaskLive do
     list_params
     |> Map.put("user_id", 1)
     |> Map.put("tasks", socket.assigns.tasks)
-    |> Todos.create_list()
+    |> Todos.create_list_with_tasks()
     |> case do
       {:ok, list} ->
         socket =
@@ -56,7 +56,7 @@ defmodule TodoAppWeb.ListTaskLive do
         {:noreply, socket}
 
       {:error, changeset} ->
-        {:error, assign(socket, :changeset, changeset)}
+        {:noreply, assign(socket, :changeset, changeset)}
     end
   end
 end
