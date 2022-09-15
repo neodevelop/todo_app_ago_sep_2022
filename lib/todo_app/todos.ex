@@ -152,6 +152,15 @@ defmodule TodoApp.Todos do
   end
 
   @doc """
+  Creates a list with at least one task
+  """
+  def create_list_with_tasks(attrs \\ %{}) do
+    %List{}
+    |> List.changeset_with_tasks(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
   Updates a list.
 
   ## Examples
