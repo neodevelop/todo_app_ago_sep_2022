@@ -25,6 +25,6 @@ defmodule TodoApp.Todos.List do
     |> validate_required([:name, :tags, :user_id])
     |> validate_length(:name, min: 5)
     |> foreign_key_constraint(:user_id)
-    |> cast_assoc(:tasks, with: &TaskList.changeset/2)
+    |> cast_assoc(:tasks)
   end
 end
